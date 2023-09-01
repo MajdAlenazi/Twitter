@@ -5,7 +5,7 @@ import RightBar from '../component/RightBar'
 
 export default function Home() {
   return (
-    <div className='flex flex-row justify-center h-screen'>
+    <div className='flex flex-row justify-center h-screen bg-[#15202C]'>
         <SideBar></SideBar>
         <MainHome></MainHome>
         <RightBar></RightBar>
