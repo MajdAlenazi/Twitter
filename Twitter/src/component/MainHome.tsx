@@ -5,7 +5,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import { faRetweet } from '@fortawesome/free-solid-svg-icons'
-import { faHeart } from '@fortawesome/free-regular-svg-icons'
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { faImage } from '@fortawesome/free-regular-svg-icons'
 import { faSquare } from '@fortawesome/free-regular-svg-icons'
@@ -22,7 +22,15 @@ type type = {
 export default function MainHome() {
     const [readTweet, setReadTweet] = React.useState<type[]>([])
     const [postTweet, setPostTweet] = React.useState("")
+    // for like
+    const [isIconClicked, setIsIconClicked] = React.useState(false);
+    const [buttonColor, setButtonColor] = React.useState("#4caf50");
     
+    const like = () => {
+        setIsIconClicked(!isIconClicked)
+        setButtonColor(isIconClicked ? "#4caf50" : "#ffff")
+    } 
+
     // Get
     React.useEffect(() => {
         axios.get('https://64f19d680e1e60602d240795.mockapi.io/Tweets')
@@ -39,7 +47,7 @@ export default function MainHome() {
         })
         .then((res) => {
             setReadTweet([...readTweet, res.data])
-            // setPostTweet({postTweet: ""})
+            setPostTweet('')
         }
         
         )}
@@ -47,10 +55,10 @@ export default function MainHome() {
     // Like
 
   return (
-    <div className='w-3/6'>
+    <div className='w-2/4'>
         {/* nav */}     
 <nav
-  className="flex-no-wrap p-4 relative flex w-full items-center justify-between bg-[#15202C] border-b border-gray-400 shadow-md shadow-black/5">
+  className="flex-no-wrap py-4 relative flex w-full items-center justify-between bg-[#15202C] border-b border-gray-400 shadow-md shadow-black/5">
   <div className="flex w-full flex-wrap items-center justify-between px-3">
   
     {/* Home nav */}
@@ -59,7 +67,7 @@ export default function MainHome() {
       id="navbarSupportedContent1"
       data-te-collapse-item>
           <a
-            className="text-neutral-500 mb-4 lg:mb-0 lg:pr-2 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+            className="text-neutral-500 text-xl font-bold mb-4 lg:mb-0 lg:pr-2 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
             href="/home"
             data-te-nav-link-ref>Home</a>
     </div>
@@ -77,7 +85,7 @@ export default function MainHome() {
   <div className="bg-[#15202C] border-b-8 border-gray-500 editor w-full flex flex-col text-gray-800 p-4 shadow-lg">
     <div className='flex items-center flex-row w-full ml-2'>
   <FontAwesomeIcon className='text-white text-4xl p-2' icon={faUser}></FontAwesomeIcon>
-    <input onChange={(e) => (setPostTweet(e.target.value))} className="w-full bg-[#15202C] text-gray-400 p-2 mb-2 outline-none"  placeholder="what's going on?" type="text"/>
+    <input value={postTweet} onChange={(e) => (setPostTweet(e.target.value))} className="w-full bg-[#15202C] text-gray-400 text-xl p-2 mb-2 outline-none"  placeholder="What is happening?!" type="text"/>
     </div>
     <div className='flex flex-row ml-10'>
     {/* <!-- icons --> */}
@@ -112,22 +120,22 @@ export default function MainHome() {
             <FontAwesomeIcon className='text-white flex justify-end' icon={faEllipsis} />
             </div>
          </div>
-         <p className="mt-3 text-sm">
+         <p className="mt-3 text-lg">
             {item.postTweet}
          </p>
-         <div className="mt-4 flex items-center justify-between">
+         <div className="mt-4 mr-2 flex items-center justify-between">
             <div className="flex text-gray-700 text-sm">
-            <FontAwesomeIcon className='text-white' icon={faComment} />
+            <FontAwesomeIcon className='text-white text-xl' icon={faComment} />
             </div>
             <div className="flex text-gray-700 text-sm">
-            <FontAwesomeIcon className='text-white'  icon={faRetweet} />
+            <FontAwesomeIcon className='text-white text-xl'  icon={faRetweet} />
             </div>
-            <div className="flextext-gray-700 text-sm">
-            <FontAwesomeIcon className='text-white'  icon={faHeart} />
+            <div onClick={like} className="flex text-sm cursor-pointer ">
+            {isIconClicked ? <FontAwesomeIcon className='text-red-500 text-xl'  icon={faHeart} /> : <FontAwesomeIcon className='text-blue text-xl'  icon={faHeart} />}
             </div>
             
             <div className="flextext-gray-700 text-sm">
-            <FontAwesomeIcon className='text-white' icon={faArrowUpFromBracket} />
+            <FontAwesomeIcon className='text-white text-xl' icon={faArrowUpFromBracket} />
             </div>
             </div>
          </div>
