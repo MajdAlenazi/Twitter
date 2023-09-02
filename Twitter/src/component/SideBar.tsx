@@ -64,7 +64,7 @@ export default function SideBar() {
 					</a>
 				</li>
 				<li>
-					<a href="#"
+					<a href="/favorite"
 						className="flex items-center text-3xl text-base font-normal w-fit p-3 rounded-3xl dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
 						<FontAwesomeIcon icon={faRectangleList} className="flex-shrink-0 pr-2 w-8 h-8 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"/>
 						<span className="ml-3">Lists</span>

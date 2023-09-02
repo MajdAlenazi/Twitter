@@ -11,12 +11,15 @@ import { faImage } from '@fortawesome/free-regular-svg-icons'
 import { faSquare } from '@fortawesome/free-regular-svg-icons'
 import { faChartSimple } from '@fortawesome/free-solid-svg-icons'
 import { faFaceSmile } from '@fortawesome/free-regular-svg-icons'
+import Swal from 'sweetalert2'
+
 
 
 import axios from 'axios';
 type type = {
     id: string
     postTweet: string;
+    liked: boolean
 }
 
 export default function MainHome() {
@@ -24,13 +27,10 @@ export default function MainHome() {
     const [postTweet, setPostTweet] = React.useState("")
     // for like
     const [isIconClicked, setIsIconClicked] = React.useState(false);
-    const [buttonColor, setButtonColor] = React.useState("#4caf50");
+    const [buttonColor, setButtonColor] = React.useState("");
+    const [liked, setLiked] = React.useState(false)
     
-    const like = () => {
-        setIsIconClicked(!isIconClicked)
-        setButtonColor(isIconClicked ? "#4caf50" : "#ffff")
-    } 
-
+    
     // Get
     React.useEffect(() => {
         axios.get('https://64f19d680e1e60602d240795.mockapi.io/Tweets')
@@ -43,7 +43,8 @@ export default function MainHome() {
     const Tweet = () => {
         axios
         .post('https://64f19d680e1e60602d240795.mockapi.io/Tweets', {
-            postTweet: postTweet
+            postTweet: postTweet,
+            liked: liked,
         })
         .then((res) => {
             setReadTweet([...readTweet, res.data])
@@ -52,7 +53,48 @@ export default function MainHome() {
         
         )}
     // Delete
+    const alert = (id:string) => {
+      
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+          .delete(`https://64f19d680e1e60602d240795.mockapi.io/Tweets/${id}`)
+          .then(() => {setReadTweet(
+            readTweet.filter((item) => {
+              return item.id !== id;
+              
+            })
+          )}) 
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+        }
+      })
+    }
     // Like
+    const like = (id:string) => {
+      setIsIconClicked(!isIconClicked)
+      setLiked(!liked)   
+      setButtonColor(isIconClicked ? "text-white" : "text-red-500")
+        // localStorage.setItem("id", id) 
+        
+          axios
+            .put(`https://64f19d680e1e60602d240795.mockapi.io/Tweets/${id}`, {
+              liked: true,
+            })
+            .then((res) => console.log(res.data));
+        
+  } 
 
   return (
     <div className='w-2/4'>
@@ -117,7 +159,7 @@ export default function MainHome() {
             <small className="text-sm text-gray-400">22h ago</small>
             </div>
             <div>
-            <FontAwesomeIcon className='text-white flex justify-end' icon={faEllipsis} />
+            <FontAwesomeIcon onClick={() => alert(item.id)} className='text-white cursor-pointer flex justify-end' icon={faEllipsis} />
             </div>
          </div>
          <p className="mt-3 text-lg">
@@ -130,7 +172,8 @@ export default function MainHome() {
             <div className="flex text-gray-700 text-sm">
             <FontAwesomeIcon className='text-white text-xl'  icon={faRetweet} />
             </div>
-            <div onClick={like} className="flex text-sm cursor-pointer ">
+            <div onClick={()=> like(item.id)} className="flex text-sm cursor-pointer ">
+            {/* <FontAwesomeIcon className={buttonColor} icon={faHeart} /> */}
             {isIconClicked ? <FontAwesomeIcon className='text-red-500 text-xl'  icon={faHeart} /> : <FontAwesomeIcon className='text-blue text-xl'  icon={faHeart} />}
             </div>
             
